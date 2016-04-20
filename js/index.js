@@ -5,8 +5,8 @@
 function addSlide(data,time){
     var slide = $('#slide');
     var tempFn = doT.template('{{~it :value:index}}\
-        <li class="list-item {{? index===0}}active{{?}}">\
-            <a href="{{=value.url}}" title="" target="_blank"><img src="{{=value.imageUrl}}"></a>\
+        <li class="list-item {{? index===0}}active{{?}}"  data-sk="banner{{=index}}">\
+            <a href="{{=value.url}}" alt="logo" target="_blank"><img src="{{=value.imageUrl}}"></a>\
         </li>\
         {{~}}');
     var result = tempFn(data);
@@ -23,7 +23,7 @@ function addSlide(data,time){
     });
     slide.mouseout(function(){
         console.log('out');
-        slideItl = setInterval(onNext,2*1000);
+        slideItl = setInterval(onNext,5*1000);
     });
     //移动端事件
     var slideNew = document.getElementById('slide');
@@ -41,9 +41,10 @@ function addSlide(data,time){
                 console.log(type);
         };
     });
-
+    addBmNav(data);
 };
-function onPrev(){
+function onPrev(e){
+    
     var slide = $('#slide');
     var curLi = slide.find('li.active');
     var nextLi = $(curLi).prev('li');
@@ -52,9 +53,21 @@ function onPrev(){
     }
     curLi.toggleClass('active');
     nextLi.toggleClass('active');
-
+    //底部切换
+    var curSk = $(curLi).attr('data-sk');
+    var curNum = curSk.slice(-1);
+    curNum = parseInt(curNum,10);
+    var bottomNavA = $('.bottom-nav a');
+    var prevNum = curNum-1;
+    if(prevNum<0){
+        prevNum = bottomNavA.length -1 ;
+    }
+    console.log(curNum,prevNum);
+    $(bottomNavA[curNum]).removeClass('active');
+    $(bottomNavA[prevNum]).addClass('active');
 };
 function onNext(e){
+    //底部切换
     var slide = $('#slide');
     var curLi = slide.find('li.active');
     var nextLi = $(curLi).next('li');
@@ -63,17 +76,55 @@ function onNext(e){
     }
     curLi.toggleClass('active');
     nextLi.toggleClass('active');
+        //底部切换
+    var curSk = $(curLi).attr('data-sk');
+    var curNum = curSk.slice(-1);
+    curNum = parseInt(curNum,10);
+    var bottomNavA = $('.bottom-nav a');
+    var nextNum = curNum+1;
+    if(nextNum>bottomNavA.length-1){
+        nextNum = 0 ;
+    }
+    console.log(curNum,nextNum);
+    $(bottomNavA[curNum]).removeClass('active');
+    $(bottomNavA[nextNum]).addClass('active');
 };
-function addBmNav(){
+function addBmNav(data){
+    var bottomNav = $('.bottom-nav');
+    var num = data.length;
+    var tempFn = doT.template('{{~it :value:index}}<li><a class="{{? index===0}}active{{?}}" data-sk="bn{{=index}}">•</a></li>{{~}}');
+    var result = tempFn(data);
+    bottomNav.html(result);
+    var bottomNavA = $('.bottom-nav a');
+    bottomNavA.click(goto);
+    // bottomNavA.hover(goto);
+};
+function goto(e){
+    var curA = $(e.target).attr('data-sk');
+    curA = curA.slice(-1);
+    curA = parseInt(curA,10);
+    console.log(curA);
+    
+    //bottom
+    var bottomNavA = $('.bottom-nav a');
+    bottomNavA.removeClass('active');
+    $(bottomNavA[curA]).addClass('active');
+    //img
+    var slide = $('#slide li');
+    slide.removeClass('active');
+    $(slide[curA]).addClass('active');
+    // nextLi.toggleClass('active');
 };
 function addHorNav(){
 
 };
 
 var data =[
-    {url:'https://promo.lu.com/activity-pages/aqlc-20160405/index.html',imageUrl:'https://static.lufaxcdn.com/wcm-images/QbyJQayiUMHLV_6CtfRfqg.jpg'},
-    {url:'https://list.lu.com/insurance/product/29837702/detail',imageUrl:'https://static.lufaxcdn.com/wcm-images/8YqJG8M7xdhlUwHHozoPNw.jpg'},
-    {url:'https://list.lu.com/list/dingqi?minMoney=&amp;maxMoney=&amp;minDays=&amp;maxDays=&amp;minRate=&amp;maxRate=&amp;mode=&amp;isCx=&amp;currentPage=1&amp;orderCondition=&amp;isShared=&amp;canRealized=&amp;productCategoryEnum=HUIFU',imageUrl:'https://static.lufaxcdn.com/wcm-images/coAV-JkBHbnTgNDkuYC5Aw.jpg'},
+    {url:'https://promo.lu.com/activity-pages/aqlc-20160405/index.html',imageUrl:'img/1.jpg'},
+    {url:'#',imageUrl:'img/2.jpg'},
+    {url:'#',imageUrl:'img/3.jpg'},
+    {url:'#',imageUrl:'img/3.jpg'},
+    {url:'#',imageUrl:'img/3.jpg'},
     ];
 addSlide(data);
 

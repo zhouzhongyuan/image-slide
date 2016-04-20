@@ -64,3 +64,28 @@
     object-fit: contain;
     width: 100%
 }
+.bottom-nav{
+    position: absolute;
+    z-index: 2;
+    bottom: 10px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.bottom-nav li{
+    display: inline-block;
+}
+.bottom-nav a{
+    cursor: pointer;
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    font-size: 26px;
+    text-align: center;
+    color: #8c8c8c
+}
+.bottom-nav a.active{
+    color: #e6551d;
+}
